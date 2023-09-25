@@ -1,24 +1,54 @@
 package main
 
 import (
-	"context"
+	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"time"
 )
 
+type QuotationAPI struct {
+	Usdbrl struct {
+		Code       string `json:"code"`
+		Codein     string `json:"codein"`
+		Name       string `json:"name"`
+		High       string `json:"high"`
+		Low        string `json:"low"`
+		VarBid     string `json:"varBid"`
+		PctChange  string `json:"pctChange"`
+		Bid        string `json:"bid"`
+		Ask        string `json:"ask"`
+		Timestamp  string `json:"timestamp"`
+		CreateDate string `json:"create_date"`
+	} `json:"USDBRL"`
+}
+
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080", nil)
+	req, err := http.Get("http://localhost:8080/cotacao")
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "Erro ao fazer a requisição: %v\n", err)
 	}
-	res, err := http.DefaultClient.Do(req)
+	defer req.Body.Close()
+
+	res, err := io.ReadAll(req.Body)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "Erro ao ler a resposta da requisição: %v\n", err)
 	}
-	defer res.Body.Close()
-	io.Copy(os.Stdout, res.Body)
+
+	var data QuotationAPI
+	err = json.Unmarshal(res, &data)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Erro ao fazer o parse da resposta: %v\n", err)
+	}
+
+	f, err := os.Create("cotacao.txt")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Erro ao criar arquivo %v\n", err)
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(fmt.Sprintf("Dólar {%s}", data.Usdbrl.Bid))
+	fmt.Println("Arquivo criado com sucesso!")
+	fmt.Println("Dólar: ", data.Usdbrl.Bid)
 }
