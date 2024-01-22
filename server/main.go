@@ -37,13 +37,6 @@ type QuotationDB struct {
 	Bid string
 }
 
-func NewQuotationDB(bid string) *QuotationDB {
-	return &QuotationDB{
-		ID:  uuid.NewString(),
-		Bid: bid,
-	}
-}
-
 // VERIFICAR A FUNÇÃO MAIN DESTE EXEMPLO: https://github.com/mattn/go-sqlite3/blob/master/_example/simple/simple.go
 func main() {
 	http.HandleFunc("/cotacao", searchQuotationHandler)
@@ -53,17 +46,12 @@ func main() {
 func searchQuotationHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Iniciou o método: searchQuotationHandler")
-
-	ctx, cancel := context.WithTimeout(r.Context(), 200*time.Millisecond)
+	ctx := r.Context()
+	ctx, cancel := context.WithTimeout(ctx, 200*time.Millisecond)
 	defer cancel()
+	defer log.Println("Request finalizada")
 
 	r.Header.Set("Accept", "application/json")
-
-	// // throws HTTP 404 if the url path were not http://localhost:8080/cotacao
-	// if r.URL.Path != "/cotacao" {
-	// 	w.WriteHeader(http.StatusNotFound)
-	// 	return
-	// }
 
 	quotation, err := SearchQuotation(ctx)
 	if err != nil {
@@ -87,42 +75,20 @@ func searchQuotationHandler(w http.ResponseWriter, r *http.Request) {
 	quotation2 := NewQuotationDB(quotation.Usdbrl.Bid)
 	err = insertQuotationDB(db, quotation2)
 	checkErr(err)
-
-	// ctx := r.Context()
-	// log.Println("Request started")
-	// successMsg := "Request processed with success"
-	// cancelMsg := "Request canceled by the client"
-	// defer log.Println("Request finished")
-
-	// select {
-	// 	case <-time.After(5 * time.Second):
-	// 		// imprime no command line stdout
-	// 		log.Println(successMsg)
-	// 		// imprime no browser
-	// 		w.Write([]byte(successMsg))
-
-	// 	case <-ctx.Done():
-	// 		// imprime no command line stdout
-	// 		log.Println(cancelMsg)
-	// }
 }
 
 func SearchQuotation(ctx context.Context) (*QuotationAPI, error) {
 
-	log.Println("Iniciou o método: SearchQuotation")
-	// var cotacao map[string]types.QuotationDataDTO
-
-	// ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
-	// defer cancel()
+	log.Println("Iniciou o método: SearchQuotation...")
 
 	// req, err := http.NewRequestWithContext(ctx, "GET", "https://economia.awesomeapi.com.br/json/last/USD-BRL", nil)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, types.QUOTATION_API_URL, nil)
 	if err != nil {
-		panic(err)
+		checkErr(err)
 	}
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		panic(err)
+		checkErr(err)
 	}
 	defer res.Body.Close()
 
@@ -139,23 +105,36 @@ func SearchQuotation(ctx context.Context) (*QuotationAPI, error) {
 	if error != nil {
 		return nil, error
 	}
+	log.Println("Terminou o método: SearchQuotation")
 
 	return &q, nil
 }
 
+func NewQuotationDB(bid string) *QuotationDB {
+	return &QuotationDB{
+		ID:  uuid.NewString(),
+		Bid: bid,
+	}
+}
+
 func insertQuotationDB(db *sql.DB, quotation *QuotationDB) error {
+	log.Println("Iniciou o método: insertQuotationDB...")
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Millisecond) // time.Microsecond
+	defer cancel()
+
 	stmt, err := db.Prepare("INSERT INTO quotations(id, bid) VALUES(?, ?)")
-	// stmt, err := db.Prepare("INSERT INTO quotations(id, bid) VALUES($1, $2)") // para o sqlite
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(quotation.ID, quotation.Bid)
+	_, err = stmt.ExecContext(ctx, quotation.ID, quotation.Bid)
 	if err != nil {
-		return err
+		checkErr(err)
 	}
 
 	fmt.Printf("Criado o registro do Bid no valor de: %v \n", quotation.Bid)
+	log.Println("Terminou o método: insertQuotationDB")
 
 	return nil
 }

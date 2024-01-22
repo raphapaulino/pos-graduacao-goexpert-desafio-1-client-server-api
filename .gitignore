@@ -1,3 +1,5 @@
+/.vscode
 /client/cotacao.txt
 /client/client
 /server/server
+/server/posgosqlite-2.db
