@@ -16,28 +16,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type QuotationAPI struct {
-	Usdbrl struct {
-		Code       string `json:"code"`
-		Codein     string `json:"codein"`
-		Name       string `json:"name"`
-		High       string `json:"high"`
-		Low        string `json:"low"`
-		VarBid     string `json:"varBid"`
-		PctChange  string `json:"pctChange"`
-		Bid        string `json:"bid"`
-		Ask        string `json:"ask"`
-		Timestamp  string `json:"timestamp"`
-		CreateDate string `json:"create_date"`
-	} `json:"USDBRL"`
-}
-
 type QuotationDB struct {
 	ID  string
 	Bid string
 }
 
-// VERIFICAR A FUNÇÃO MAIN DESTE EXEMPLO: https://github.com/mattn/go-sqlite3/blob/master/_example/simple/simple.go
 func main() {
 	http.HandleFunc("/cotacao", searchQuotationHandler)
 	http.ListenAndServe(":8080", nil)
@@ -77,7 +60,7 @@ func searchQuotationHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 }
 
-func SearchQuotation(ctx context.Context) (*QuotationAPI, error) {
+func SearchQuotation(ctx context.Context) (*types.QuotationAPI, error) {
 
 	log.Println("Iniciou o método: SearchQuotation...")
 
@@ -100,12 +83,12 @@ func SearchQuotation(ctx context.Context) (*QuotationAPI, error) {
 		return nil, error
 	}
 
-	var q QuotationAPI
+	var q types.QuotationAPI
 	error = json.Unmarshal(body, &q)
 	if error != nil {
 		return nil, error
 	}
-	log.Println("Terminou o método: SearchQuotation")
+	log.Println("Finalizado")
 
 	return &q, nil
 }
@@ -134,7 +117,7 @@ func insertQuotationDB(db *sql.DB, quotation *QuotationDB) error {
 	}
 
 	fmt.Printf("Criado o registro do Bid no valor de: %v \n", quotation.Bid)
-	log.Println("Terminou o método: insertQuotationDB")
+	log.Println("Finalizado")
 
 	return nil
 }
