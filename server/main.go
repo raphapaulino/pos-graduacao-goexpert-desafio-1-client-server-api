@@ -54,6 +54,16 @@ func searchQuotationHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 	defer db.Close()
 
+	// cria a tabela quotations
+	sts := `
+	CREATE TABLE IF NOT EXISTS quotations(id INTEGER PRIMARY KEY, bid TEXT);
+	`
+	_, err = db.Exec(sts)
+	if err != nil {
+		checkErr(err)
+	}
+	fmt.Println("Table quotations is ready.")
+
 	// gera a nova cotação
 	quotation2 := NewQuotationDB(quotation.Usdbrl.Bid)
 	err = insertQuotationDB(db, quotation2)
