@@ -39,11 +39,7 @@ git clone git@github.com:raphapaulino/pos-graduacao-goexpert-desafio-1-client-se
 
 #### 3. Criar o banco de dados Sqlite para uso nesse projeto
 
-À partir da raiz do projeto, acessar o diretório **server** e criar o arquivo do banco utilizando os seguintes comandos via terminal:
-
-```
-cd server
-```
+À partir da raiz do projeto, criar o arquivo do banco utilizando o seguinte comando via terminal:
 
 ```
 touch posgosqlite-2.db
@@ -51,13 +47,17 @@ touch posgosqlite-2.db
 
 ### EXECUTANDO O PROJETO
 
-1. À partir da raiz do projeto, acessar o diretório **server** e  baixar as dependências do projeto:
+1. Estando na raiz do projeto, baixar as dependências do projeto:
 
 ```
 go mod tidy
 ```
 
-2. Na sequência, gerar o programa servidor e executá-lo:
+2. Na sequência, acessar o diretório **server**, gerar o programa servidor e executá-lo:
+
+```
+cd server
+```
 
 ```
 go build -o server
@@ -82,15 +82,33 @@ go build -o client
 ```
 
 
-### SQLs DO DESAFIO
+### PLUS: COMO VERIFICAR AS COTAÇÕES GRAVADAS NO BANCO?
+
+À partir da raiz do projeto, acessar o diretório **server**, executar a leitura ao banco de dados, na command line do sqlite3 visualizar as tabelas e depois visualizar os registros da tabela **quotations**:
 
 ```
-CREATE TABLE quotations (id varchar(255), bid decimal(10,2), primary key (id));
+cd server
 ```
 
 ```
-SELECT * FROM quotations;
+sqlite3 posgosqlite-2.db
 ```
 
+```
+sqlite> .tables
+```
+
+```
+sqlite> SELECT * FROM quotations;
+```
+
+That's all folks! : )
 
 
+## Contacts
+
+[LinkedIn](https://www.linkedin.com/in/raphaelalvespaulino/)
+
+[GitHub](https://github.com/raphapaulino/)
+
+[My Portfolio](https://www.raphaelpaulino.com.br/)
