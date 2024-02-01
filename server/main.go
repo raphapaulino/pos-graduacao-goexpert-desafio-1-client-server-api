@@ -56,7 +56,7 @@ func searchQuotationHandler(w http.ResponseWriter, r *http.Request) {
 
 	// cria a tabela quotations
 	sts := `
-	CREATE TABLE IF NOT EXISTS quotations(id INTEGER PRIMARY KEY, bid TEXT);
+	CREATE TABLE IF NOT EXISTS quotations(id VARCHAR(36), bid TEXT);
 	`
 	_, err = db.Exec(sts)
 	if err != nil {
