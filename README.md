@@ -84,11 +84,7 @@ go build -o client
 
 ### PLUS: COMO VERIFICAR AS COTAÇÕES GRAVADAS NO BANCO?
 
-À partir da raiz do projeto, acessar o diretório **server**, executar a leitura ao banco de dados, na command line do sqlite3 visualizar as tabelas e depois visualizar os registros da tabela **quotations**:
-
-```
-cd server
-```
+À partir da raiz do projeto, executar a leitura ao banco de dados, visualizar as tabelas na command line do sqlite3 e depois visualizar os registros da tabela **quotations**:
 
 ```
 sqlite3 posgosqlite-2.db
