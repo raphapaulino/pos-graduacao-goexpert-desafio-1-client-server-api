@@ -47,7 +47,7 @@ touch posgosqlite-2.db
 
 ### EXECUTANDO O PROJETO
 
-1. Estando na raiz do projeto, baixar as dependências do projeto:
+1. Estando na raiz do projeto, baixar as dependências:
 
 ```
 go mod tidy
