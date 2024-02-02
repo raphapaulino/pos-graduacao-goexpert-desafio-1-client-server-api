@@ -50,7 +50,7 @@ func searchQuotationHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(payload)
 
 	// abre a conexão com o banco de dados
-	db, err := sql.Open("sqlite3", "./posgosqlite-2.db")
+	db, err := sql.Open("sqlite3", "../posgosqlite-2.db")
 	checkErr(err)
 	defer db.Close()
 
@@ -59,9 +59,7 @@ func searchQuotationHandler(w http.ResponseWriter, r *http.Request) {
 	CREATE TABLE IF NOT EXISTS quotations(id VARCHAR(36), bid TEXT);
 	`
 	_, err = db.Exec(sts)
-	if err != nil {
-		checkErr(err)
-	}
+	checkErr(err)
 	fmt.Println("Table quotations is ready.")
 
 	// gera a nova cotação
@@ -74,7 +72,6 @@ func SearchQuotation(ctx context.Context) (*types.QuotationAPI, error) {
 
 	log.Println("Iniciou o método: SearchQuotation...")
 
-	// req, err := http.NewRequestWithContext(ctx, "GET", "https://economia.awesomeapi.com.br/json/last/USD-BRL", nil)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, types.QUOTATION_API_URL, nil)
 	if err != nil {
 		checkErr(err)
@@ -113,7 +110,7 @@ func NewQuotationDB(bid string) *QuotationDB {
 func insertQuotationDB(db *sql.DB, quotation *QuotationDB) error {
 	log.Println("Iniciou o método: insertQuotationDB...")
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Millisecond) // time.Microsecond
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Millisecond)
 	defer cancel()
 
 	stmt, err := db.Prepare("INSERT INTO quotations(id, bid) VALUES(?, ?)")
