@@ -29,7 +29,7 @@ O endpoint necessário gerado pelo server.go para este desafio será: /cotacao e
 
 #### 1. Instalar o GO no sistema operacional.
 
-É possível encontrar todas as instruções de como baixar e instalar o GO nos sistemas operacionais Windows, Mac ou Linux [aqui](https://go.dev/doc/install).
+É possível encontrar todas as instruções de como baixar e instalar o `GO` nos sistemas operacionais Windows, Mac ou Linux [aqui](https://go.dev/doc/install).
 
 #### 2. Instalar o Git no sistema operacional:
 
