@@ -31,13 +31,17 @@ O endpoint necessário gerado pelo server.go para este desafio será: /cotacao e
 
 É possível encontrar todas as instruções de como baixar e instalar o GO nos sistemas operacionais Windows, Mac ou Linux [aqui](https://go.dev/doc/install).
 
-#### 2. Clonar o repositório:
+#### 2. Instalar o Git no sistema operacional:
+
+É possível encontrar todas as instruções de como baixar e instalar o `Git` nos sistemas operacionais Windows, Mac ou Linux [aqui](https://www.git-scm.com/downloads).
+
+#### 3. Clonar o repositório:
 
 ```
 git clone git@github.com:raphapaulino/pos-graduacao-goexpert-desafio-1-client-server-api.git
 ```
 
-#### 3. Criar o banco de dados Sqlite para uso nesse projeto
+#### 4. Criar o banco de dados Sqlite para uso nesse projeto
 
 À partir da raiz do projeto, criar o arquivo do banco utilizando o seguinte comando via terminal:
 
